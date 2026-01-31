@@ -1,0 +1,59 @@
+import httpx
+from fastapi import FastAPI, HTTPException, Query
+from typing import Optional
+
+app = FastAPI(
+    title="FastAPI Posts API",
+    description="Test API consuming JSONPlaceholder",
+    version="1.0.0"
+)
+
+BASE_URL = "https://jsonplaceholder.typicode.com"
+
+
+@app.get("/posts")
+async def list_posts(user_id: Optional[int] = Query(None)):
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        response = await client.get(f"{BASE_URL}/posts")
+        response.raise_for_status()
+        posts = response.json()
+
+    if user_id is not None:
+        posts = [post for post in posts if post["userId"] == user_id]
+
+    return posts
+
+
+@app.get("/posts/search")
+async def search_posts(q: str = Query(..., min_length=1)):
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        response = await client.get(f"{BASE_URL}/posts")
+        response.raise_for_status()
+        posts = response.json()
+
+    q_lower = q.lower()
+
+    return [
+        post for post in posts
+        if q_lower in post["title"].lower() or q_lower in post["body"].lower()
+    ]
+
+
+@app.get("/posts/{post_id}")
+async def get_post_with_author(post_id: int):
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        post_response = await client.get(f"{BASE_URL}/posts/{post_id}")
+        if post_response.status_code == 404:
+            raise HTTPException(status_code=404, detail="Post not found")
+
+        post = post_response.json()
+        user_id = post["userId"]
+
+        user_response = await client.get(f"{BASE_URL}/users/{user_id}")
+        user_response.raise_for_status()
+        author = user_response.json()
+
+    return {
+        "post": post,
+        "author": author
+    }
