@@ -33,6 +33,8 @@ Database: N/A (data fetched from external API)
 Authentication: N/A (public API)
 
 **⚙️ Setup Instructions**
+
+
 **1️⃣ Prerequisites**
 
 Python 3.9+
@@ -87,4 +89,5 @@ Optional: JWT or OAuth2 can be integrated in future versions for protected endpo
 Note: All endpoints fetch data from JSONPlaceholder and return JSON responses.
 
 **Author**
+
 **GREGORY TALI**
