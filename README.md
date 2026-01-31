@@ -1,5 +1,7 @@
 FastAPI-Posts-API
+
 FastAPI Posts API - Backend Documentation
+
 📋 Project Overview
 
 The FastAPI Posts API is a technical test project that consumes data from the public JSONPlaceholder API and provides custom endpoints for listing, searching, and retrieving posts with author details. The backend is built using FastAPI and asynchronous HTTP calls for high performance and responsiveness.
